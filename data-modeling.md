@@ -58,3 +58,20 @@
    - many ingredients can be used in many recipes
 
    ![alt text](ERD.gif)
+
+CREATE TABLE users (id SERIAL PRIMARY KEY, username VARHCAR(50) UNIQUE, password VARCHAR(255));
+
+CREATE TABLE recipes (id SERIAL PRIMARY KEY, user_id INT, title VARCHAR(255), instructions TEXT, isPublic BOOLEAN, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);
+
+CREATE TABLE ingredients (id SERIAL PRIMARY KEY, name VARCHAR(255) UNIQUE);
+
+CREATE TABLE recipe_ingredients (id SERIAL PRIMARY KEY, recipe_id INT, ingredient_id INT, quantity DECIMAL(10, 2), unit VARCHAR(50), FOREIGN KEY (recipe_id) REFERENCES Recipes(id),
+FOREIGN KEY (ingredient_id) REFERENCES ingredients(id));
+
+CREATE TABLE grocery (id SERIAL PRIMARY KEY, user_id INT, ingredient_id INT, quantity DECIMAL(10, 2), CHECK (Quantity >= 0),
+FOREIGN KEY (user_id) REFERENCES users(id),
+FOREIGN KEY (ingredient_id) REFERENCES ingredients(id));
+
+CREATE TABLE occasions (id SERIAL PRIMARY KEY, user_id INT, name VARCHAR(255), date DATE, description TEXT, FOREIGN KEY (user_id) REFERENCES Users(id));
+
+CREATE TABLE occasion_recipes (id SERIAL PRIMARY KEY, occasion_id INT, recipe_id INT, order INT, FOREIGN KEY (occasion_id) REFERENCES occasions(id), FOREIGN KEY (recipe_id) REFERENCES recipes(id));
